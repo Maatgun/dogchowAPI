@@ -8,7 +8,7 @@ const generarJWT = (id = '') => {
     return new Promise((res, rej) => {
         const payload = { id };
         jsonwebtoken_1.default.sign(payload, process.env.miclavesecreta, {
-            expiresIn: '4h'
+            expiresIn: '20000hs'
         }, (err, token) => {
             if (err) {
                 console.log(err);
