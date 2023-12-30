@@ -10,13 +10,6 @@ import ordersRoutes from '../routes/orders';
 
 import issueRoutes from '../routes/issues';
 
-const corsOptions = {
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    credentials: true,
-    optionsSuccessStatus: 204,
-};
-
 export class Server {
  app: Express;
  port: string | number | undefined;
@@ -49,8 +42,6 @@ export class Server {
 
     middlewares(): void {
         this.app.use(cors());
-        this.app.use(express.json());
-        this.app.use(cors(corsOptions));
         this.app.use(express.json());
     }
 
