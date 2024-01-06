@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
         const payload = {id};
 
         jwt.sign(payload, process.env.miclavesecreta as string, {
-            expiresIn: '30h'
+            expiresIn: '24h'
         }, (err: Error | null, token: string | undefined) => {
             if (err) {
                 console.log(err);
