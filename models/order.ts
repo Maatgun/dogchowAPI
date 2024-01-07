@@ -13,7 +13,7 @@ interface IItem {
     id: string;
     price: number;
     quantity: number;
-    name: string;
+    title: string;
     
     }
 
