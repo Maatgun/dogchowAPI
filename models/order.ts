@@ -101,6 +101,6 @@ const orderSchema = new Schema<IOrder>({
 });
 
 
-const Order: Model<IOrder> = model('Order', orderSchema);
+const Order: Model<IOrder> = model('Orders', orderSchema);
 
 export default Order;
