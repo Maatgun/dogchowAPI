@@ -10,10 +10,9 @@ interface IShippingDetails {
 
 interface IItem {
     desc: string;
-    id: string;
     price: number;
     quantity: number;
-    title: string;
+    name: string;
     
     }
 
