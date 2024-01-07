@@ -7,7 +7,7 @@ interface IShippingDetails {
     address: string;
 }
 
-interface IItem {
+interface IItems {
     id: number;
     price: number;
     quantity: number;
@@ -19,7 +19,7 @@ export interface IOrder {
     user: Types.ObjectId;
     price: number;
     shippingCost: number;
-    items: IItem[];
+    items: IItems[];
     shippingDetails: IShippingDetails;
     status: string;
     total: number
