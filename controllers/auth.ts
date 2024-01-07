@@ -57,6 +57,8 @@ const { email, password } : IUsuario = req.body;
             return;
         }
 
+        console.log(usuario._id);
+        console.log(usuario.id);
         const token = await generarJWT(usuario.id);
 
         res.json({

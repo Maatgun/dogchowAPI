@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import Usuario, { IUsuario } from "../models/usuario";
 
 const validarJwt = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -13,7 +13,7 @@ const validarJwt = async (req: Request, res: Response, next: NextFunction): Prom
     }
 
     try {
-        const claveSecreta = process.env.miclavesecreta as string;
+        const claveSecreta = process.env.CLAVESECRETA as string;
         const payload = jwt.verify(token, claveSecreta) as JwtPayload;
         const {id} = payload;
 
