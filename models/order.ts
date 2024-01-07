@@ -13,7 +13,7 @@ interface IItem {
     id: string;
     price: number;
     quantity: number;
-    title: string;
+    name: string;
     
     }
 
@@ -101,6 +101,6 @@ const orderSchema = new Schema<IOrder>({
 });
 
 
-const Order: Model<IOrder> = model('Orders', orderSchema);
+const Order: Model<IOrder> = model('Order', orderSchema);
 
 export default Order;
