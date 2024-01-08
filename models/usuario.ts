@@ -32,6 +32,10 @@ const UserSchema = new Schema<IUsuario>({
     code: {
         type: String,
     },
+    verified: {
+        type: Boolean,
+        default: false
+    }
 });
 
 UserSchema.methods.toJSON = function () {
