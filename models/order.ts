@@ -34,7 +34,7 @@ const orderSchema = new Schema<IOrder>({
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Usuario',
         required: true
     },
     price: {
@@ -47,10 +47,6 @@ const orderSchema = new Schema<IOrder>({
     },
     items: {
         type: [{
-            desc: {
-                type: String,
-                required: true
-            },
             id: {
                 type: Number,
                 required: true
