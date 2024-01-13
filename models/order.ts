@@ -1,20 +1,19 @@
-import { Model, Schema, model } from 'mongoose';
-import { Types } from 'mongoose';
+import { Model, Schema, Types, model } from "mongoose";
 
 interface IShippingDetails {
     name: string;
     cellphone: string;
     location: string;
     address: string;
-    }
+}
 
 interface IItem {
-    id: string;
+    desc: string;
+    id: number;
     price: number;
     quantity: number;
     title: string;
-    
-    }
+}
 
 export interface IOrder {
     createdAt: Date;
@@ -24,10 +23,10 @@ export interface IOrder {
     items: IItem[];
     shippingDetails: IShippingDetails;
     status: string;
-    total: number;
+    total: number
 }
 
-const orderSchema = new Schema<IOrder>({
+const OrderSchema = new Schema<IOrder>({
     createdAt: {
         type: Date,
         default: Date.now
@@ -39,19 +38,23 @@ const orderSchema = new Schema<IOrder>({
     },
     price: {
         type: Number,
-        required: true
+        required: true,
     },
     shippingCost: {
         type: Number,
-        required: true
+        required: true,
     },
     items: {
         type: [{
+            desc: {
+                type: String,
+                required: true
+            },
             id: {
                 type: Number,
                 required: true
             },
-            price: {
+            price:{
                 type: Number,
                 required: true
             },
@@ -62,10 +65,9 @@ const orderSchema = new Schema<IOrder>({
             title: {
                 type: String,
                 required: true
-            },
-        }
-            
-        ]
+            }
+        }],
+        required: true
     },
     shippingDetails: {
         name: {
@@ -87,15 +89,15 @@ const orderSchema = new Schema<IOrder>({
     },
     status: {
         type: String,
-        required: true
+        required:true
     },
     total: {
         type: Number,
         required: true
-    }
-});
+    },
 
+})
 
-const Order: Model<IOrder> = model('Order', orderSchema);
+const Order: Model<IOrder> = model<IOrder>("Order", OrderSchema)
 
-export default Order;
+export default Order
