@@ -103,8 +103,6 @@ export const verifyUser = async(req: Request, res: Response): Promise<void> => {
             return;
         } 
 
-        const usuarioActualizado = await Usuario.findOneAndUpdate({email}, {verified: true});
-
         res.status(200).json({
             msj: 'Usuario verificado correctamente'
         });

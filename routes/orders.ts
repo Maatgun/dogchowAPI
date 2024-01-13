@@ -10,7 +10,7 @@ const router = Router();
 
 router.get('/', [validarJwt, recolectarErrores], getOrdenes)
 
-router.post('/', [validarJwt, isVerified, check("price,", "El precio es obligatorio").not().isEmpty(),
+router.post('/', [validarJwt, isVerified, check("price", "El precio es obligatorio").not().isEmpty(),
 check("shippingCost", "El costo del envío es obligatorio").not().isEmpty(),
 check("total", "El total es obligatorio").not().isEmpty(),
 check("shippingDetails", "Los detalles de envío son obligatorios").not().isEmpty(),
