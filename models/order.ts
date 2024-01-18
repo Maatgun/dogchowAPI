@@ -1,14 +1,19 @@
-import { Model, Schema, Types, model } from "mongoose";
+import { Model, Schema, model, Types } from 'mongoose';
 
 interface IShippingDetails {
-    name: string;
+    name: {
+        type: String;
+        required: true;
+        minlength: 3;
+        maxlength: 50;
+    };
     cellphone: string;
     location: string;
     address: string;
 }
 
 interface IItem {
-    id: number;
+    id: string;
     price: number;
     quantity: number;
     title: string;
@@ -19,21 +24,21 @@ export interface IOrder {
     user: Types.ObjectId;
     price: number;
     shippingCost: number;
-    items: IItem[];
+    item: IItem[];
     shippingDetails: IShippingDetails;
     status: string;
-    total: number
+    total: number;
 }
 
-const OrderSchema = new Schema<IOrder>({
+const orderSchema = new Schema<IOrder>({
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'Usuario',
-        required: true
+        required: true,
     },
     price: {
         type: Number,
@@ -43,56 +48,57 @@ const OrderSchema = new Schema<IOrder>({
         type: Number,
         required: true,
     },
-    items: {
-        type: [{
-            id: {
-                type: Number,
-                required: true
+    item: {
+        type: [
+            {
+                id: {
+                    type: String,
+                    required: true,
+                },
+                price: {
+                    type: Number,
+                    required: true,
+                },
+                quantity: {
+                    type: Number,
+                    required: true,
+                },
+                title: {
+                    type: String,
+                    required: true,
+                },
             },
-            price:{
-                type: Number,
-                required: true
-            },
-            quantity: {
-                type: Number,
-                required: true
-            },
-            title: {
-                type: String,
-                required: true
-            }
-        }],
-        required: true
+        ],
+        required: true,
     },
     shippingDetails: {
         name: {
             type: String,
-            required: true
+            required: true,
         },
         cellphone: {
             type: String,
-            required: true
+            required: true,
         },
         location: {
             type: String,
-            required: true
+            required: true,
         },
         address: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     status: {
         type: String,
-        required:true
+        required: true,
     },
     total: {
         type: Number,
-        required: true
+        required: true,
     },
+});
 
-})
+const Order: Model<IOrder> = model('Order', orderSchema);
 
-const Order: Model<IOrder> = model<IOrder>("Order", OrderSchema)
-
-export default Order
+export default Order;
