@@ -2,7 +2,7 @@ import { Router } from "express";
 import { login, register } from "../controllers/auth";
 import { check } from "express-validator";
 import { recolectarErrores } from "../middlewares/recolectarErrores";
-import { existingMail } from "../helpers/validacionesDB";
+import { existeEmail } from "../helpers/validacionesDB";
 
 const router = Router();
 
@@ -16,7 +16,7 @@ router.post(
 			"password",
 			"La contraseña debe tener al menos 6 caracteres"
 		).isLength({ min: 6 }),
-		check("mail").custom(existingMail),
+		check("mail").custom(existeEmail),
 		recolectarErrores,
 	],
 	register
