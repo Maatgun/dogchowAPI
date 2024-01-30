@@ -71,6 +71,7 @@ export const createOrder = async (req: Request, res: Response) => {
 		shippingDetails,
 		status,
 		total,
+        shippingCost,
 	};
 	const order = new Order(orderData);
 	await order.save();
@@ -112,15 +113,16 @@ export const updateOrder = async (req: Request, res: Response) => {
 		});
 		return;
 	}
-	const orderData: IOrder = {
-		createdAt: new Date(),
-		user: _id,
-		price,
-		items,
-		shippingDetails,
-		status,
-		total,
-	};
+const orderData: IOrder = {
+    createdAt: new Date(),
+    user: _id,
+    price,
+    items,
+    shippingDetails,
+    status,
+    total,
+    shippingCost: SHIPPING_COST,
+};
 	let updOrder = await Order.findByIdAndUpdate(ID, orderData, { new: true })
 		.populate("user")
 		.populate({

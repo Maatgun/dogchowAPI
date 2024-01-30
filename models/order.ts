@@ -1,73 +1,104 @@
-import { Model, ObjectId, Schema, Types, model } from "mongoose";
-import { IShippingDetails, ShippingDetailsSchema } from "./shippingDetails";
+import { Model, Schema, Types, model } from "mongoose";
 
-export interface IItem {
-	product: ObjectId;
-	quantity: number;
+interface IShippingDetails {
+    name: string;
+    cellphone: string;
+    location: string;
+    address: string;
 }
 
-const ItemSchema = new Schema<IItem>({
-	product: {
-		type: Schema.Types.ObjectId,
-		ref: "Product",
-		required: true,
-	},
-	quantity: {
-		type: Number,
-		required: true,
-	},
-});
+export interface IItem {
+    desc: string;
+    id: number;
+    price: number;
+    quantity: number;
+    title: string;
+    product: Types.ObjectId;
+}
 
 export interface IOrder {
-	createdAt: Date;
-	user: Types.ObjectId;
-	price: number;
-	shippingCost?: number;
-	items: IItem[];
-	shippingDetails?: IShippingDetails;
-	status?: string;
-	total: number;
+    createdAt: Date;
+    user: Types.ObjectId;
+    price: number;
+    shippingCost: number;
+    items: IItem[];
+    shippingDetails: IShippingDetails;
+    status: string;
+    total: number
 }
 
 const OrderSchema = new Schema<IOrder>({
-	createdAt: {
-		type: Date,
-		default: Date.now,
-	},
-	user: {
-		type: Schema.Types.ObjectId,
-		ref: "User",
-		required: true,
-	},
-	price: {
-		type: Number,
-		required: true,
-	},
-	shippingCost: {
-		type: Number,
-		required: false,
-		default: 10,
-	},
-	items: {
-		type: [ItemSchema],
-		required: true,
-		default: undefined,
-	},
-	shippingDetails: {
-		type: ShippingDetailsSchema,
-		default: undefined,
-	},
-	status: {
-		type: String,
-		required: false,
-		default: "pending",
-	},
-	total: {
-		type: Number,
-		required: true,
-	},
-});
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    shippingCost: {
+        type: Number,
+        required: true,
+    },
+    items: {
+        type: [{
+            desc: {
+                type: String,
+                required: true
+            },
+            id: {
+                type: Number,
+                required: true
+            },
+            price:{
+                type: Number,
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+            title: {
+                type: String,
+                required: true
+            }
+        }],
+        required: true
+    },
+    shippingDetails: {
+        name: {
+            type: String,
+            required: true
+        },
+        cellphone: {
+            type: String,
+            required: true
+        },
+        location: {
+            type: String,
+            required: true
+        },
+        address: {
+            type: String,
+            required: true
+        }
+    },
+    status: {
+        type: String,
+        required:true
+    },
+    total: {
+        type: Number,
+        required: true
+    },
 
-const Order: Model<IOrder> = model<IOrder>("Order", OrderSchema);
+})
 
-export default Order;
+const Order: Model<IOrder> = model<IOrder>("Order", OrderSchema)
+
+export default Order
