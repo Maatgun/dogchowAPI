@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { IItem } from "../models/order";
 import Product, { IProduct } from "../models/product";
+import { IItem } from "../models/order";
 
 export const orderValidator = async (
 	req: Request,
