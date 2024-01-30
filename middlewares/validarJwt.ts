@@ -36,6 +36,7 @@ const validarJwt = async (req: Request, res: Response, next: NextFunction): Prom
             msj: 'Token no válido'
         });
     }
+
 }
 
 export default validarJwt;

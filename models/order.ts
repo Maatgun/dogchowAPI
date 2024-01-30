@@ -1,12 +1,7 @@
 import { Model, Schema, model, Types } from 'mongoose';
 
 interface IShippingDetails {
-    name: {
-        type: String;
-        required: true;
-        minlength: 3;
-        maxlength: 50;
-    };
+    name: string;
     cellphone: string;
     location: string;
     address: string;

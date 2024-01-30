@@ -4,7 +4,7 @@ import { check } from "express-validator";
 import validarJWT from "../middlewares/validarJwt";
 import { recolectarErrores } from "../middlewares/recolectarErrores";
 import { isVerified } from "../middlewares/validarVerificado";
-import { getOrders, createOrder } from "../controllers/orders";
+import { getOrders, createOrder } from "../controllers/order";
 
 const router = Router();
 
