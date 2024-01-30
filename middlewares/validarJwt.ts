@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
 import jwt, { JwtPayload } from "jsonwebtoken";
-import Usuario, { IUser } from "../models/user";
+import Usuario from "../models/usuario";
+import { IUsuario } from "../models/usuario";
 
 const jwtValidator = async (
 	req: Request,
@@ -23,7 +24,7 @@ const jwtValidator = async (
 
 		const { id } = payload;
 
-		const user: IUser | null = await Usuario.findById(id);
+		const user: IUsuario | null = await Usuario.findById(id);
 
 		if (!user) {
 			res.status(404).json({

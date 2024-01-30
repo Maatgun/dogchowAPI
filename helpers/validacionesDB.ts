@@ -1,6 +1,6 @@
-import User, { IUser } from "../models/user";
+import Usuario, { IUsuario } from "../models/usuario";
 
 export const existingMail = async (mail: string): Promise<void> => {
-	const user: IUser | null = await User.findOne({ mail });
-	if (user) throw new Error(`El correo electrónico ${mail} ya está registrado`);
+    const foundUser: IUsuario | null = await Usuario.findOne({ mail });
+    if (foundUser) throw new Error(`El correo electrónico ${mail} ya está registrado`);
 };
