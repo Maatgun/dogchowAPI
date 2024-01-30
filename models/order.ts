@@ -1,99 +1,73 @@
-import { Model, Schema, model, Types } from 'mongoose';
+import { Model, ObjectId, Schema, Types, model } from "mongoose";
+import { IShippingDetails, ShippingDetailsSchema } from "./shippingDetails";
 
-interface IShippingDetails {
-    name: string;
-    cellphone: string;
-    location: string;
-    address: string;
+export interface IItem {
+	product: ObjectId;
+	quantity: number;
 }
 
-interface IItem {
-    id: string;
-    price: number;
-    quantity: number;
-    title: string;
-}
-
-export interface IOrder {
-    createdAt: Date;
-    user: Types.ObjectId;
-    price: number;
-    shippingCost: number;
-    item: IItem[];
-    shippingDetails: IShippingDetails;
-    status: string;
-    total: number;
-}
-
-const orderSchema = new Schema<IOrder>({
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        required: true,
-    },
-    price: {
-        type: Number,
-        required: true,
-    },
-    shippingCost: {
-        type: Number,
-        required: true,
-    },
-    item: {
-        type: [
-            {
-                id: {
-                    type: String,
-                    required: true,
-                },
-                price: {
-                    type: Number,
-                    required: true,
-                },
-                quantity: {
-                    type: Number,
-                    required: true,
-                },
-                title: {
-                    type: String,
-                    required: true,
-                },
-            },
-        ],
-        required: true,
-    },
-    shippingDetails: {
-        name: {
-            type: String,
-            required: true,
-        },
-        cellphone: {
-            type: String,
-            required: true,
-        },
-        location: {
-            type: String,
-            required: true,
-        },
-        address: {
-            type: String,
-            required: true,
-        },
-    },
-    status: {
-        type: String,
-        required: true,
-    },
-    total: {
-        type: Number,
-        required: true,
-    },
+const ItemSchema = new Schema<IItem>({
+	product: {
+		type: Schema.Types.ObjectId,
+		ref: "Product",
+		required: true,
+	},
+	quantity: {
+		type: Number,
+		required: true,
+	},
 });
 
-const Order: Model<IOrder> = model('Order', orderSchema);
+export interface IOrder {
+	createdAt: Date;
+	user: Types.ObjectId;
+	price: number;
+	shippingCost?: number;
+	items: IItem[];
+	shippingDetails?: IShippingDetails;
+	status?: string;
+	total: number;
+}
+
+const OrderSchema = new Schema<IOrder>({
+	createdAt: {
+		type: Date,
+		default: Date.now,
+	},
+	user: {
+		type: Schema.Types.ObjectId,
+		ref: "User",
+		required: true,
+	},
+	price: {
+		type: Number,
+		required: true,
+	},
+	shippingCost: {
+		type: Number,
+		required: false,
+		default: 10,
+	},
+	items: {
+		type: [ItemSchema],
+		required: true,
+		default: undefined,
+	},
+	shippingDetails: {
+		type: ShippingDetailsSchema,
+		default: undefined,
+	},
+	status: {
+		type: String,
+		required: false,
+		default: "pending",
+	},
+	total: {
+		type: Number,
+		required: true,
+	},
+});
+
+const Order: Model<IOrder> = model<IOrder>("Order", OrderSchema);
 
 export default Order;

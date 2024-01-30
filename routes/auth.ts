@@ -1,42 +1,39 @@
-import { Router } from 'express';
-import { register, login, verifyUser } from '../controllers/auth';
-import { check } from 'express-validator';
-import { emailExiste } from '../helpers/validacionesDB';
-import { recolectarErrores } from '../middlewares/recolectarErrores';
-
+import { Router } from "express";
+import { login, register } from "../controllers/auth";
+import { check } from "express-validator";
+import { recolectarErrores } from "../middlewares/recolectarErrores";
+import { existingMail } from "../helpers/validacionesDB";
 
 const router = Router();
 
-router.post('/register',[
-    //middlewares
-    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check('email', 'El email es obligatorio').isEmail(),
-    check('password', 'La contraseña es obligatoria').not().isEmpty(),
-    check('password', 'La contraseña debe tener al menos 6 caracteres').isLength({min: 6}),
-    //validacion custom 
-    check('email').custom(emailExiste),
-    //middleware custom
-    recolectarErrores,
+router.post(
+	"/register",
+	[
+		check("name", "El nombre es obligatorio").not().isEmpty(),
+		check("mail", "El correo electrónico es obligatorio").not().isEmpty(),
+		check("mail", "El correo electrónico no es válido").isEmail(),
+		check(
+			"password",
+			"La contraseña debe tener al menos 6 caracteres"
+		).isLength({ min: 6 }),
+		check("mail").custom(existingMail),
+		recolectarErrores,
+	],
+	register
+);
 
-], register);
-
-router.post('/login',[
-    //middlewares
-    check('email', 'El email es obligatorio').isEmail(),
-    check('password', 'La contraseña es obligatoria').not().isEmpty(),
-    //middleware custom
-    recolectarErrores,
-
-], login);
-
-router.patch('/verify',[
-    //middlewares
-    check('email', 'El email es obligatorio').isEmail(),
-    check('code', 'El código es obligatorio').not().isEmpty(),
-    recolectarErrores,
-    //middleware custom
-    recolectarErrores,
-
-], verifyUser);
+router.post(
+	"/login",
+	[
+		check("mail", "El correo electrónico no es válido").isEmail(),
+		check("mail", "El correo electrónico es obligatorio").not().isEmpty(),
+		check(
+			"password",
+			"La contraseña debe tener al menos 6 caracteres"
+		).isLength({ min: 6 }),
+		recolectarErrores,
+	],
+	login
+);
 
 export default router;

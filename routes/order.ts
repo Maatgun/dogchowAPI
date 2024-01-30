@@ -1,28 +1,50 @@
 import { Router } from "express";
+import {
+	createOrder,
+	deleteOrder,
+	getAllFromUser,
+	getOneById,
+	getOrdersByStatus,
+	updateOrder,
+} from "../controllers/order";
+import jwtValidator from "../middlewares/validarJwt";
 import { check } from "express-validator";
-
-import validarJWT from "../middlewares/validarJwt";
 import { recolectarErrores } from "../middlewares/recolectarErrores";
-import { isVerified } from "../middlewares/validarVerificado";
-import { getOrders, createOrder } from "../controllers/order";
-
+import { orderValidator } from "../middlewares/orderValidator";
 const router = Router();
-
-// Rutas
-
-// Obtener órdenes
-router.get("/", [validarJWT, recolectarErrores], getOrders);
-
-// Crear nueva orden
-router.post("/", [
-    validarJWT,
-    isVerified,
-    check("price").isNumeric().withMessage("El precio debe ser numérico"),
-    check("shippingCost", "El costo de envío es obligatorio").not().isEmpty(),
-    check("total", "El total es obligatorio").not().isEmpty(),
-    check("shippingDetails", "Los detalles de envío son obligatorios").not().isEmpty(),
-    check("items", "El array de productos es obligatorio").not().isEmpty(),
-    recolectarErrores
-], createOrder);
+router.get("/", [jwtValidator, recolectarErrores], getAllFromUser);
+router.get("/:ID", [jwtValidator, recolectarErrores], getOneById);
+router.get(
+	"/status/:STATUS",
+	[jwtValidator, recolectarErrores],
+	getOrdersByStatus
+);
+router.post(
+	"/",
+	[
+		jwtValidator,
+		check("items", "Debe haber al menos un producto en la orden").isArray({
+			min: 1,
+		}),
+		check("price", "El precio es obligatorio").not().isEmpty(),
+		orderValidator,
+		recolectarErrores,
+	],
+	createOrder
+);
+router.put(
+	"/:ID",
+	[
+		jwtValidator,
+		check("items", "Debe haber al menos un producto en la orden").isArray({
+			min: 1,
+		}),
+		check("price", "El precio es obligatorio").not().isEmpty(),
+		orderValidator,
+		recolectarErrores,
+	],
+	updateOrder
+);
+router.delete("/:ID", [jwtValidator, recolectarErrores], deleteOrder);
 
 export default router;

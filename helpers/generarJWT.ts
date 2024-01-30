@@ -1,24 +1,21 @@
 import jwt from "jsonwebtoken";
 
-const generateJWT = (id: string = ""): Promise<string> =>{
-    return new Promise ((res, rej)=>{
-        const payload = {id};
-        jwt.sign(
-            payload,
-            process.env.CLAVESECRETA as string,
-            {
-                expiresIn: "30 days",
-            },
-            (err: Error|null, token: string |undefined)=>{
-                if (err){
-                    console.log(err);
-                    rej('No se pudo generar el token')
-                }else{
-                    res(token as string);
-                }
-            }
-        )
-    })
-}
+export const JWTgenerator = (id: string = ""): Promise<string> => {
+	return new Promise((res, rej) => {
+		const payload = { id };
 
-export default generateJWT
+		jwt.sign(
+			payload,
+			process.env.TOKENKEY as string,
+			// { expiresIn: "4h" },
+			(err: Error | null, token: string | undefined) => {
+				if (err) {
+					console.log(err);
+					rej("No pudo generarse el JWT");
+				} else {
+					res(token as string);
+				}
+			}
+		);
+	});
+};

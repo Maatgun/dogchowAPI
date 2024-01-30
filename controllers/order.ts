@@ -1,39 +1,177 @@
 import { Request, Response } from "express";
 import Order, { IOrder } from "../models/order";
-import { ObjectId } from "mongoose";
+import { SHIPPING_COST } from "../helpers/constants";
 
-export const getOrders = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const usuarioId: ObjectId = req.body.usuarioConfirmado._id;
-        const consulta = { user: usuarioId };
-        const orders = await Order.find(consulta);
-        res.json({ data: [...orders] });
-    } catch (error) {
-        console.error("Error en getOrders:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
-    }
+export const getAllFromUser = async (req: Request, res: Response) => {
+	const user = req.body.user;
+	const orders: IOrder[] = await Order.find({ user: user._id })
+		.populate("user")
+		.populate({
+			path: "items",
+			populate: {
+				path: "product",
+				model: "Product",
+			},
+		});
+
+	res.status(200).json({
+		user,
+		orders,
+	});
+	return;
+};
+export const getOneById = async (req: Request, res: Response) => {
+	const { ID } = req.params;
+	const order: IOrder | null = await Order.findById(ID)
+		.populate("user")
+		.populate({
+			path: "items",
+			populate: {
+				path: "product",
+				model: "Product",
+			},
+		});
+	if (!order) {
+		res.status(404).json({
+			msj: "La orden no existe",
+		});
+		return;
+	}
+	res.status(200).json({
+		order,
+	});
+	return;
+};
+export const getOrdersByStatus = async (req: Request, res: Response) => {
+	const { STATUS } = req.params;
+	const orders: IOrder[] = await Order.find({ status: STATUS })
+		.populate("user")
+		.populate({
+			path: "items",
+			populate: {
+				path: "product",
+				model: "Product",
+			},
+		});
+	res.status(200).json({
+		orders,
+	});
+	return;
+};
+export const createOrder = async (req: Request, res: Response) => {
+	const { _id } = req.body.user;
+	const { items, shippingDetails, price, status }: IOrder = req.body;
+	const shippingCost = SHIPPING_COST;
+	const total = price + shippingCost;
+	const orderData: IOrder = {
+		createdAt: new Date(),
+		user: _id,
+		price,
+		items,
+		shippingDetails,
+		status,
+		total,
+	};
+	const order = new Order(orderData);
+	await order.save();
+
+	res.status(201).json({
+		msg: "Orden creada con éxito",
+		order: order,
+	});
+	return;
 };
 
-export const createOrder = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const usuario: ObjectId = req.body.usuarioConfirmado._id;
-        const orderData: IOrder = req.body;
+export const updateOrder = async (req: Request, res: Response) => {
+	const { _id } = req.body.user;
+	const { ID } = req.params;
+	const { items, shippingDetails, price, status }: IOrder = req.body;
+	const shippingCost = SHIPPING_COST;
+	const total = price + shippingCost;
+	let order = await Order.findById(ID);
+	if (!order) {
+		res.status(404).json({
+			msg: "La orden no existe",
+		});
+		return;
+	}
+	if (
+		order?.status !== "pending" &&
+		order?.status !== "cart" &&
+		order?.status !== "checkout"
+	) {
+		res.status(403).json({
+			msg: "La orden solo puede modificarse si se encuentra en estado pendiente, en el carrito, o en checkout",
+			order: order,
+		});
+		return;
+	}
+	if (order?.user._id.toString() !== _id.toString()) {
+		res.status(403).json({
+			msg: "La orden solo puede modificarse por el usuario/a que la creó",
+		});
+		return;
+	}
+	const orderData: IOrder = {
+		createdAt: new Date(),
+		user: _id,
+		price,
+		items,
+		shippingDetails,
+		status,
+		total,
+	};
+	let updOrder = await Order.findByIdAndUpdate(ID, orderData, { new: true })
+		.populate("user")
+		.populate({
+			path: "items",
+			populate: {
+				path: "product",
+				model: "Product",
+			},
+		});
+	res.status(200).json({
+		msg: "Orden modificada con éxito",
+		order: updOrder,
+	});
+	return;
+};
 
-        // Realiza validaciones adicionales si es necesario
-
-        const data = {
-            ...orderData,
-            user: usuario,
-            createdAt: new Date(),
-            status: "pending"
-        };
-
-        const order = new Order(data);
-        await order.save();
-
-        res.status(201).json({ data: order });
-    } catch (error) {
-        console.error("Error en createOrder:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
-    }
+export const deleteOrder = async (req: Request, res: Response) => {
+	const { _id } = req.body.user;
+	const { ID } = req.params;
+	let order = await Order.findById(ID)
+		.populate("user")
+		.populate({
+			path: "items",
+			populate: {
+				path: "product",
+				model: "Product",
+			},
+		});
+	if (!order) {
+		res.status(404).json({
+			msg: "La orden no existe",
+		});
+		return;
+	}
+	if (order?.status !== "pending" && order?.status !== "cart") {
+		res.status(403).json({
+			msg: "La orden solo puede eliminarse si se encuentra en estado pendiente o en el carrito, contáctese con una sucursal",
+			order: order,
+		});
+		return;
+	}
+	if (order?.user._id.toString() !== _id.toString()) {
+		res.status(403).json({
+			msg: "La orden solo puede eliminarse por el usuario/a que la creó",
+		});
+		return;
+	}
+	await Order.findByIdAndDelete(ID);
+	res.status(200).json({
+		msg: "Orden eliminada con éxito",
+		order,
+	});
+	return;
 };
