@@ -4,7 +4,7 @@ import bcryptjs from "bcryptjs";
 import { ROLES } from "../helpers/constants";
 import randomstring from "randomstring";
 import { sendEmail } from "../mailer/mailer";
-import { generarJWT } from "../helpers/generarJWT";
+import  generarJWT  from "../helpers/generarJWT";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     const { nombre, email, password, rol } : IUsuario = req.body;

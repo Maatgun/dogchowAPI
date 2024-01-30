@@ -20,8 +20,8 @@ export const orderValidator = async (
 		});
 	}
 	if (shippingDetails) {
-		const { name, lname, mail, dni, address } = shippingDetails;
-		if (!name || !lname || !mail || !dni || !address) {
+		const { name, cellphone, location, address } = shippingDetails;
+		if (!name || !name || !cellphone || !location || !address) {
 			res.status(400).json({
 				msg: `Asegúrese de haber ingresado todos los campos obligatorios para el envío`,
 			});
