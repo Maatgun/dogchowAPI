@@ -1,39 +1,53 @@
 import { Router } from "express";
-import { login, register } from "../controllers/auth";
 import { check } from "express-validator";
 import { recolectarErrores } from "../middlewares/recolectarErrores";
-import { existeEmail } from "../helpers/validacionesDB";
+import {
+	createCategory,
+	deleteCategory,
+	getAllCategories,
+	getCategoryByCode,
+	updateCategory,
+} from "../controllers/category";
+import jwtValidator from "../middlewares/validarJwt";
+import { isAdmin } from "../middlewares/validarRol";
 
 const router = Router();
 
+router.get("/", [], getAllCategories);
+router.get("/:CODE", getCategoryByCode);
 router.post(
-	"/register",
+	"/",
 	[
-		check("name", "El nombre es obligatorio").not().isEmpty(),
-		check("mail", "El correo electrónico es obligatorio").not().isEmpty(),
-		check("mail", "El correo electrónico no es válido").isEmail(),
-		check(
-			"password",
-			"La contraseña debe tener al menos 6 caracteres"
-		).isLength({ min: 6 }),
-		check("mail").custom(existeEmail),
+		jwtValidator,
+		isAdmin,
+		check("title", "El título es obligatorio").not().isEmpty(),
+		check("title", "El título debe contener entre 3 y 25 caracteres").isLength({
+			min: 3,
+			max: 25,
+		}),
+		check("code", "El código es obligatorio").not().isEmpty(),
 		recolectarErrores,
 	],
-	register
+	createCategory
 );
-
-router.post(
-	"/login",
+router.patch(
+	"/:CODE",
 	[
-		check("mail", "El correo electrónico no es válido").isEmail(),
-		check("mail", "El correo electrónico es obligatorio").not().isEmpty(),
-		check(
-			"password",
-			"La contraseña debe tener al menos 6 caracteres"
-		).isLength({ min: 6 }),
+		jwtValidator,
+		isAdmin,
+		check("title", "El título es obligatorio").not().isEmpty(),
+		check("title", "El título debe contener entre 3 y 25 caracteres").isLength({
+			min: 3,
+			max: 25,
+		}),
 		recolectarErrores,
 	],
-	login
+	updateCategory
 );
 
+router.delete(
+	"/:CODE",
+	[jwtValidator, isAdmin, recolectarErrores],
+	deleteCategory
+);
 export default router;
