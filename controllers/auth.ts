@@ -1,29 +1,28 @@
 import { Request, Response } from "express";
-import Usuario, { IUser } from "../models/usuario";
+import Usuario, {IUsuario} from "../models/usuario";
 import bcryptjs from "bcryptjs";
 import { ROLES } from "../helpers/constants";
 import randomstring from "randomstring";
 import { sendEmail } from "../mailer/mailer";
-import  generarJWT  from "../helpers/generarJWT";
+import generarJWT from "../helpers/generarJWT";
 
-export const register =async (req:Request, res: Response): Promise<void> => {
+export const register = async (req: Request, res: Response): Promise<void> => {
+    const { nombre, email, password, rol } : IUsuario = req.body;
     
-    const {nombre, email,password}: IUser = req.body;
+    const usuario = new Usuario({ nombre, email, password, rol});
 
-    const usuario = new Usuario({nombre, email, password})
+    // Encriptar contraseña
 
-    const salt = bcryptjs.genSaltSync()
+    const salt = bcryptjs.genSaltSync();
+    usuario.password = bcryptjs.hashSync(password, salt);
 
-    usuario.password = bcryptjs.hashSync(password, salt)
-
-    const adminKey = req.headers["admin-key"]
-
-    if(adminKey === process.env.KEYFORADMIN) {
-        usuario.rol = ROLES.admin
+    const adminKey = req.headers["admin-key"];
+    
+    if (adminKey === process.env.KEYFORADMIN) {
+        usuario.rol = ROLES.admin;
     }
 
     const newCode = randomstring.generate(6);
-
     usuario.code = newCode;
 
     await usuario.save();
@@ -32,81 +31,88 @@ export const register =async (req:Request, res: Response): Promise<void> => {
 
     res.status(201).json({
         usuario
-    })
-}
+    });
+};
 
-export const login =async (req:Request, res: Response): Promise<void> => {
-    const {email,password}: IUser = req.body;
+export const login = async(req: Request, res: Response): Promise<void> => {  
+const { email, password } : IUsuario = req.body;
 
-    try{
-        const usuario = await Usuario.findOne({email})
+    try {
+         
+        const usuario = await Usuario.findOne({email});
 
-        if(!usuario){
+        if (!usuario) {
             res.status(400).json({
-                msj: "No se encontró el email en la base de datos"
-            })
+                msj: 'No existe un usuario con ese email'
+            });
             return;
         }
 
-        const validarPassword = bcryptjs.compareSync(password, usuario.password)
+        const validPassword = bcryptjs.compareSync(password, usuario.password);
 
-        if(!validarPassword){
+        if (!validPassword) {
             res.status(400).json({
-                msj: "La contraseña es incorrecta"
-            })
+                msj: 'Contraseña incorrecta'
+            });
             return;
         }
-        console.log(usuario._id)
-        console.log(usuario.id)
-        const token = await generarJWT(usuario.id)
+
+        console.log(usuario._id);
+        console.log(usuario.id);
+        const token = await generarJWT(usuario.id);
 
         res.json({
-          usuario,
-          token,
+            usuario,
+            token
         });
 
-    }catch(error){
+    } catch (error) {   
         console.log(error);
         res.status(500).json({
-            msj: "Error en el servidor"
+            msj: 'Error interno'
         })
-    }
 
 }
+}
 
-export const verifyUser =async (req:Request, res: Response): Promise<void>=> {
-    const { email, code } = req.body
+export const verifyUser = async(req: Request, res: Response): Promise<void> => {
+     const { email, code } =  req.body; 
+    
+    try {
 
-    try{
-        const usuario = await Usuario.findOne({email})
+        const usuario = await Usuario.findOne({email});
 
-        if(!usuario){
+        if (!usuario) {
             res.status(400).json({
-                msj: "No se encontró el email en la base de datos"
-            })
+                msj: 'No existe un usuario con ese email'
+            });
             return;
         }
 
-        if(usuario.verified) {
+        if (usuario.verified) {
             res.status(400).json({
-                msj: "El usuario ya está correctamente verificado"
-            })
+                msj: 'El usuario ya está correctamente verificado'
+            });
             return;
         }
-
-        if(usuario.code !== code){
+         
+        if (usuario.code !== code) {
             res.status(401).json({
-                msj: "El código ingresado es incorrecto"
-            })
+                msj: 'Código incorrecto'
+            });
             return;
-        }
+        } 
 
-    }catch(error){
+        const usuarioActualizado = await Usuario.findOneAndUpdate({email}, {verified: true});
+
+        res.status(200).json({
+            msj: 'Usuario verificado correctamente'
+        });
+
+    } catch (error) {
         console.log(error);
         res.status(500).json({
-            msj: "Error en el servidor"
+            msj: 'Error interno'
         })
     }
-
-
 }

@@ -3,7 +3,7 @@ import validarJWT from "../middlewares/validarJwt";
 import { recolectarErrores } from "../middlewares/recolectarErrores";
 
 import { check } from "express-validator";
-import { getOrders, createOrder } from "../controllers/order";
+import { getOrders, createOrder } from "../controllers/orders";
 import { isVerified } from "../middlewares/validarVerificado";
 
 const router = Router();
