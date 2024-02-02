@@ -7,9 +7,10 @@ import { sendEmail } from "../mailer/mailer";
 import  generarJWT  from "../helpers/generarJWT";
 
 export const register =async (req:Request, res: Response): Promise<void> => {
-    const {nombre, email, password, rol}: IUser = req.body;
+    
+    const {nombre, email,password}: IUser = req.body;
 
-    const usuario = new Usuario({nombre, email, password, rol})
+    const usuario = new Usuario({nombre, email, password})
 
     const salt = bcryptjs.genSaltSync()
 
@@ -99,10 +100,6 @@ export const verifyUser =async (req:Request, res: Response): Promise<void>=> {
             })
             return;
         }
-
-        res.status(200).json({
-            msj: "Usuario verificado con éxito"
-        })
 
     }catch(error){
         console.log(error);

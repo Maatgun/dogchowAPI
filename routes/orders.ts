@@ -4,7 +4,7 @@ import { recolectarErrores } from "../middlewares/recolectarErrores";
 
 import { check } from "express-validator";
 import { getOrders, createOrder } from "../controllers/order";
-import { isVerified } from "../middlewares/ValidacionUserVerificado";
+import { isVerified } from "../middlewares/validarVerificado";
 
 const router = Router();
 

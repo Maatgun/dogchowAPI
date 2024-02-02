@@ -9,7 +9,7 @@ const generarJWT = (id: string = ""): Promise<string> =>{
             payload,
             process.env.CLAVESECRETA as string,
             {
-                expiresIn: "2h"
+                expiresIn: "24hs"
             },
             (err: Error | null, token: string | undefined) =>{
                 if(err){
