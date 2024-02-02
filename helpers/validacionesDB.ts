@@ -1,15 +1,16 @@
-import Usuario, {IUser} from "../models/usuario";
+import Usuario, {IUsuario} from "../models/usuario";
 import { sendEmail } from "../mailer/mailer";
 
-export const existeEmail =async (email:string): Promise<void> => {
-    const existeEmail: IUser | null = await Usuario.findOne({email})
+export const emailExiste = async (email: string): Promise<void> => {
+    const emailExiste : IUsuario | null = await Usuario.findOne({email});
+    
+    if (emailExiste && emailExiste.verified) {
+        throw new Error(`El email ${email} ya está registrado`);
+    } 
 
-    if(existeEmail  && existeEmail.verified){
-        throw new Error(`El correo ${email} ya está registrado`);
-    }
+    if (emailExiste && !emailExiste.verified) {
+        await sendEmail(email, emailExiste.code as string);
+        throw new Error(`El email ${email} ya está registrado pero no está verificado. Se ha enviado un nuevo código de verificación a ${email}`);
+    } 
 
-    if(existeEmail && !existeEmail.verified){
-        await sendEmail(email, existeEmail.code as string)
-        throw new Error(`El usuario ya está registrado. Se envió el codigo de verificación a ${email}`)
-    }
-}
+}   

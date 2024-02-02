@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import Usuario, { IUser } from "../models/usuario";
+import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
+import Usuario, { IUsuario } from "../models/usuario";
 
 const validarJwt = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const token = req.headers['x-token'] as string;
@@ -13,11 +13,11 @@ const validarJwt = async (req: Request, res: Response, next: NextFunction): Prom
     }
 
     try {
-        const claveSecreta = process.env.CLAVESECRETA as string;
+        const claveSecreta = process.env.miclavesecreta as string;
         const payload = jwt.verify(token, claveSecreta) as JwtPayload;
         const {id} = payload;
 
-        const usuarioConfirmado: IUser | null = await Usuario.findById(id);
+        const usuarioConfirmado: IUsuario | null = await Usuario.findById(id);
 
         if (!usuarioConfirmado) {
             res.status(401).json({
@@ -36,7 +36,6 @@ const validarJwt = async (req: Request, res: Response, next: NextFunction): Prom
             msj: 'Token no válido'
         });
     }
-
 }
 
 export default validarJwt;

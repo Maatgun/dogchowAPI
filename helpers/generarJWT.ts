@@ -1,26 +1,20 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
-const generarJWT = (id: string = ""): Promise<string> =>{
-    return new Promise((res, rej)=>{
+ const generarJWT = (id:string = ''): Promise<string> => {
+    return new Promise((res, rej) => {
+        const payload = {id};
 
-        const payload = { id };
-
-        jwt.sign(
-            payload,
-            process.env.CLAVESECRETA as string,
-            {
-                expiresIn: "24hs"
-            },
-            (err: Error | null, token: string | undefined) =>{
-                if(err){
-                    console.log(err);
-                    rej("No se pudo generar el token")
-                } else {
-                    res(token as string);
-                }
+        jwt.sign(payload, process.env.miclavesecreta as string, {
+            expiresIn: '30h'
+        }, (err: Error | null, token: string | undefined) => {
+            if (err) {
+                console.log(err);
+                rej('No se pudo generar el token');
+            } else {
+                res(token as string);
             }
-        )
-    })
+        });
+    });
 }
 
-export default generarJWT
+export default generarJWT;
