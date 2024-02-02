@@ -1,50 +1,24 @@
-import { Router } from "express";
-import {
-	createOrder,
-	deleteOrder,
-	getAllFromUser,
-	getOneById,
-	getOrdersByStatus,
-	updateOrder,
-} from "../controllers/order";
-import jwtValidator from "../middlewares/validarJwt";
-import { check } from "express-validator";
+import { Router } from "express"
+import validarJWT from "../middlewares/validarJwt";
 import { recolectarErrores } from "../middlewares/recolectarErrores";
-import { orderValidator } from "../middlewares/orderValidator";
+
+import { check } from "express-validator";
+import { getOrdenes, createOrder } from "../controllers/order";
+import { isVerified } from "../middlewares/validarVerificado";
+
 const router = Router();
-router.get("/", [jwtValidator, recolectarErrores], getAllFromUser);
-router.get("/:ID", [jwtValidator, recolectarErrores], getOneById);
-router.get(
-	"/status/:STATUS",
-	[jwtValidator, recolectarErrores],
-	getOrdersByStatus
-);
-router.post(
-	"/",
-	[
-		jwtValidator,
-		check("items", "Debe haber al menos un producto en la orden").isArray({
-			min: 1,
-		}),
-		check("price", "El precio es obligatorio").not().isEmpty(),
-		orderValidator,
-		recolectarErrores,
-	],
-	createOrder
-);
-router.put(
-	"/:ID",
-	[
-		jwtValidator,
-		check("items", "Debe haber al menos un producto en la orden").isArray({
-			min: 1,
-		}),
-		check("price", "El precio es obligatorio").not().isEmpty(),
-		orderValidator,
-		recolectarErrores,
-	],
-	updateOrder
-);
-router.delete("/:ID", [jwtValidator, recolectarErrores], deleteOrder);
+
+router.get("/",[validarJWT, recolectarErrores], getOrdenes);
+
+router.post("/", [
+    validarJWT,
+    isVerified,
+    check("price", "El precio es obligatorio").not().isEmpty(),
+    check("shippingCost", "El costo de envío es obligatorio").not().isEmpty(),
+    check("total", "El total es obligatorio").not().isEmpty(),
+    check("shippingDetails", "Los detalles de envío son obligatorios").not().isEmpty(),
+    check("items", "El array de productos es obligatorio").not().isEmpty(),
+    recolectarErrores
+],createOrder)
 
 export default router;
