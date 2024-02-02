@@ -2,11 +2,9 @@ import { Schema } from "mongoose";
 
 export interface IShippingDetails {
 	name: string;
-	lname: string;
-	mail: string;
-	dni: number;
+	cellphone: number;
+    email: string;
 	address: string;
-	details: string;
 }
 
 export const ShippingDetailsSchema = new Schema<IShippingDetails>({
@@ -14,24 +12,16 @@ export const ShippingDetailsSchema = new Schema<IShippingDetails>({
 		type: String,
 		required: true,
 	},
-	lname: {
+	email: {
 		type: String,
 		required: true,
 	},
-	mail: {
-		type: String,
-		required: true,
-	},
-	dni: {
+	cellphone: {
 		type: Number,
 		required: true,
 	},
 	address: {
 		type: String,
 		required: true,
-	},
-	details: {
-		type: String,
-		required: false,
 	},
 });

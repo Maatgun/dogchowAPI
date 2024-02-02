@@ -1,46 +1,46 @@
 import { NextFunction, Request, Response } from "express";
 
 import jwt, { JwtPayload } from "jsonwebtoken";
+
 import Usuario, { IUser } from "../models/usuario";
 
-const jwtValidator = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const token = req.headers["x-token"] as string;
+const validarJWT =async (req:Request, res: Response, next: NextFunction): Promise<void> => {
+    const token = req.headers["x-token"] as string;
 
-	if (!token) {
-		res.status(401).json({
-			msg: "No hay token en la peticion",
-		});
-		return;
-	}
+    if(!token) {
+        res.status(401).json({
+            msj: "No hay token en la petición"
+        })
+        return;
+    }
 
-	try {
-		const tokenKey = process.env.TOKENKEY as string;
-		const payload = jwt.verify(token, tokenKey) as JwtPayload;
+    try {
+        const claveSecreta = process.env.CLAVESECRETA as string;
+        const payload = jwt.verify(token, claveSecreta) as JwtPayload;
 
-		const { id } = payload;
+        const {id} = payload;
 
-		const user: IUser | null = await Usuario.findById(id);
+        const usuarioConfirmado: IUser | null = await Usuario.findById(id);
 
-		if (!user) {
-			res.status(404).json({
-				msg: "El usuario no se ha encontrado en la DB",
-			});
-			return;
-		}
+        if(!usuarioConfirmado){
+            res.status(401).json({
+                msj: "Token no válido"
+            })
+            return;
+        }
 
-		req.body.user = user;
+        req.body.usuarioConfirmado = usuarioConfirmado;
 
-		next();
-	} catch (error) {
-		console.log(error);
-		res.status(401).json({
-			msg: "Token no válido",
-		});
-	}
-};
+        req.body.id = id;
 
-export default jwtValidator;
+        next();
+    }catch(error){
+        console.log(error)
+        res.status(401).json({
+            msj: "Token no válido"
+        })
+    }
+
+}
+
+export default validarJWT;

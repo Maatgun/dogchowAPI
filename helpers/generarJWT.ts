@@ -1,19 +1,21 @@
 import jwt from "jsonwebtoken";
 
 const generarJWT = (id: string = ""): Promise<string> =>{
-    return new Promise ((res, rej)=>{
-        const payload = {id};
+    return new Promise((res, rej)=>{
+
+        const payload = { id };
+
         jwt.sign(
             payload,
             process.env.CLAVESECRETA as string,
             {
-                expiresIn: "30 days",
+                expiresIn: "2h"
             },
-            (err: Error|null, token: string |undefined)=>{
-                if (err){
+            (err: Error | null, token: string | undefined) =>{
+                if(err){
                     console.log(err);
-                    rej('No se pudo generar el token')
-                }else{
+                    rej("No se pudo generar el token")
+                } else {
                     res(token as string);
                 }
             }
@@ -21,4 +23,4 @@ const generarJWT = (id: string = ""): Promise<string> =>{
     })
 }
 
-export default generarJWT;
+export default generarJWT
