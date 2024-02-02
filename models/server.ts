@@ -3,7 +3,7 @@ import cors from 'cors';
 import { dbConnection } from "../database/config";
 
 import authRoutes from "../routes/auth"
-import ordersRoutes from "../routes/order";
+import ordersRoutes from "../routes/orders";
 
 export class Server {
     app: Express;

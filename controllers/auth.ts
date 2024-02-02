@@ -7,7 +7,7 @@ import { sendEmail } from "../mailer/mailer";
 import  generarJWT  from "../helpers/generarJWT";
 
 export const register =async (req:Request, res: Response): Promise<void> => {
-    const {nombre, email,password, rol}: IUser = req.body;
+    const {nombre, email, password, rol}: IUser = req.body;
 
     const usuario = new Usuario({nombre, email, password, rol})
 
@@ -99,8 +99,6 @@ export const verifyUser =async (req:Request, res: Response): Promise<void>=> {
             })
             return;
         }
-
-        const usuarioActualizado = await Usuario.findOneAndUpdate({email}, {verified: true})
 
         res.status(200).json({
             msj: "Usuario verificado con éxito"

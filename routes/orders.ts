@@ -3,12 +3,12 @@ import validarJWT from "../middlewares/validarJwt";
 import { recolectarErrores } from "../middlewares/recolectarErrores";
 
 import { check } from "express-validator";
-import { getOrdenes, createOrder } from "../controllers/order";
-import { isVerified } from "../middlewares/validarVerificado";
+import { getOrders, createOrder } from "../controllers/order";
+import { isVerified } from "../middlewares/ValidacionUserVerificado";
 
 const router = Router();
 
-router.get("/",[validarJWT, recolectarErrores], getOrdenes);
+router.get("/",[validarJWT, recolectarErrores], getOrders);
 
 router.post("/", [
     validarJWT,
