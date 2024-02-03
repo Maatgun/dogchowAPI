@@ -23,7 +23,7 @@ const validarJwt = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         return;
     }
     try {
-        const claveSecreta = process.env.miclavesecreta;
+        const claveSecreta = process.env.CLAVESECRETA;
         const payload = jsonwebtoken_1.default.verify(token, claveSecreta);
         const { id } = payload;
         const usuarioConfirmado = yield usuario_1.default.findById(id);

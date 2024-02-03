@@ -1,6 +1,7 @@
 import Usuario, {IUsuario} from "../models/usuario";
 import { sendEmail } from "../mailer/mailer";
 
+
 export const emailExiste = async (email: string): Promise<void> => {
     const emailExiste : IUsuario | null = await Usuario.findOne({email});
     

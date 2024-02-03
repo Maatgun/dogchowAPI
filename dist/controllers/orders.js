@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createOrder = exports.getOrdenes = void 0;
+exports.createOrder = exports.getOrders = void 0;
 const order_1 = __importDefault(require("../models/order"));
-const getOrdenes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const usuarioId = req.body.usuarioConfirmado._id;
     const consulta = { user: usuarioId };
     const orders = yield order_1.default.find(consulta);
@@ -22,7 +22,7 @@ const getOrdenes = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         data: [...orders]
     });
 });
-exports.getOrdenes = getOrdenes;
+exports.getOrders = getOrders;
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const usuario = req.body.usuarioConfirmado._id;
     const orderData = req.body;

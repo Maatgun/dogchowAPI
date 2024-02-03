@@ -18,21 +18,17 @@ const cors_1 = __importDefault(require("cors"));
 const config_1 = require("../database/config");
 const auth_1 = __importDefault(require("../routes/auth"));
 const orders_1 = __importDefault(require("../routes/orders"));
-const issues_1 = __importDefault(require("../routes/issues"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
         this.port = process.env.PORT;
         this.authPath = '/auth';
         this.ordersPath = '/orders';
-        this.issuesPath = '/issues';
-        // Connect to database
-        this.connectDB();
+        this.conectarDB();
         this.middlewares();
-        // Routes
         this.routes();
     }
-    connectDB() {
+    conectarDB() {
         return __awaiter(this, void 0, void 0, function* () {
             yield (0, config_1.dbConnection)();
         });
@@ -44,11 +40,10 @@ class Server {
     routes() {
         this.app.use(this.authPath, auth_1.default);
         this.app.use(this.ordersPath, orders_1.default);
-        this.app.use(this.issuesPath, issues_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {
-            console.log(`Server running on port ${this.port}`);
+            console.log(`Corriendo en el puerto ${this.port}`);
         });
     }
 }

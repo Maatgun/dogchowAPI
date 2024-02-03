@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const generarJWT = (id = '') => {
+const generateJWT = (id = "") => {
     return new Promise((res, rej) => {
         const payload = { id };
-        jsonwebtoken_1.default.sign(payload, process.env.miclavesecreta, {
-            expiresIn: '20000hs'
+        jsonwebtoken_1.default.sign(payload, process.env.CLAVESECRETA, {
+            expiresIn: "12h",
         }, (err, token) => {
             if (err) {
                 console.log(err);
@@ -20,4 +20,4 @@ const generarJWT = (id = '') => {
         });
     });
 };
-exports.default = generarJWT;
+exports.default = generateJWT;
