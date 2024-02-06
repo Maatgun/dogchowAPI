@@ -7,7 +7,7 @@ const generateJWT = (id: string = ""): Promise<string> =>{
             payload,
             process.env.CLAVESECRETA as string,
             {
-                expiresIn: "30 days",
+                expiresIn: "30days",
             },
             (err: Error|null, token: string |undefined)=>{
                 if (err){
