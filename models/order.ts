@@ -4,9 +4,9 @@ import { Model, Schema, Types, model } from "mongoose";
 
 interface IShippingDetails {
     name: string;
-    address: string;
     cellphone: string;
     location: string;
+    address: string;
    
 }
 
@@ -72,19 +72,21 @@ const OrderSchema = new Schema<IOrder>({
             type: String,
             required: true
         }, 
-        address: {
-            type: String,
-            required: true
-        },
+        
         cellphone: {
             type: String,
             required: true
         },
+        
         location: {
             type: String,
             required: true
-        }
+        },
        
+        address: {
+            type: String,
+            required: true
+        }
     },
     status: {
         type: String,
