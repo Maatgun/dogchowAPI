@@ -1,18 +1,20 @@
 import { Model, Schema, Types, model } from "mongoose";
 
+
+
 interface IShippingDetails {
     name: string;
+    address: string;
     cellphone: string;
     location: string;
-    address: string;
+   
 }
 
-export interface IItem {
+interface IOrderItems {
     id: number;
     price: number;
     quantity: number;
     title: string;
-    category: string;
 }
 
 export interface IOrder {
@@ -20,7 +22,7 @@ export interface IOrder {
     user: Types.ObjectId;
     price: number;
     shippingCost: number;
-    item: IItem[];
+    items: IOrderItems[];
     shippingDetails: IShippingDetails;
     status: string;
     total: number
@@ -44,7 +46,7 @@ const OrderSchema = new Schema<IOrder>({
         type: Number,
         required: true,
     },
-    item: {
+    items: {
         type: [{
             id: {
                 type: Number,
@@ -61,16 +63,16 @@ const OrderSchema = new Schema<IOrder>({
             title: {
                 type: String,
                 required: true
-            },
-            category: {
-                type: String,
-                required: true
-            },
+            }
         }],
         required: true
     },
     shippingDetails: {
         name: {
+            type: String,
+            required: true
+        }, 
+        address: {
             type: String,
             required: true
         },
@@ -81,11 +83,8 @@ const OrderSchema = new Schema<IOrder>({
         location: {
             type: String,
             required: true
-        },
-        address: {
-            type: String,
-            required: true
         }
+       
     },
     status: {
         type: String,

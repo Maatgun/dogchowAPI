@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
-// CONFIG el transporte de nodemailer para utilizar gmail
 const transporter = nodemailer_1.default.createTransport({
     service: 'gmail',
     auth: {

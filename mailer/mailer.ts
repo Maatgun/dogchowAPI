@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 
-// CONFIG el transporte de nodemailer para utilizar gmail
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',

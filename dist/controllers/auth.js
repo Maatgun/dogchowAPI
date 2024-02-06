@@ -20,8 +20,8 @@ const randomstring_1 = __importDefault(require("randomstring"));
 const mailer_1 = require("../mailer/mailer");
 const generarJWT_1 = __importDefault(require("../helpers/generarJWT"));
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { nombre, email, password, rol } = req.body;
-    const usuario = new usuario_1.default({ nombre, email, password, rol });
+    const { nombre, email, password } = req.body;
+    const usuario = new usuario_1.default({ nombre, email, password });
     // Encriptar contraseña
     const salt = bcryptjs_1.default.genSaltSync();
     usuario.password = bcryptjs_1.default.hashSync(password, salt);

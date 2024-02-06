@@ -19,7 +19,7 @@ const OrderSchema = new mongoose_1.Schema({
         type: Number,
         required: true,
     },
-    item: {
+    items: {
         type: [{
                 id: {
                     type: Number,
@@ -36,11 +36,7 @@ const OrderSchema = new mongoose_1.Schema({
                 title: {
                     type: String,
                     required: true
-                },
-                category: {
-                    type: String,
-                    required: true
-                },
+                }
             }],
         required: true
     },
@@ -49,15 +45,15 @@ const OrderSchema = new mongoose_1.Schema({
             type: String,
             required: true
         },
+        address: {
+            type: String,
+            required: true
+        },
         cellphone: {
             type: String,
             required: true
         },
         location: {
-            type: String,
-            required: true
-        },
-        address: {
             type: String,
             required: true
         }
@@ -71,5 +67,5 @@ const OrderSchema = new mongoose_1.Schema({
         required: true
     },
 });
-const Order = (0, mongoose_1.model)("Orders", OrderSchema);
+const Order = (0, mongoose_1.model)("Order", OrderSchema);
 exports.default = Order;

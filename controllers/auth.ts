@@ -7,9 +7,9 @@ import { sendEmail } from "../mailer/mailer";
 import generarJWT from "../helpers/generarJWT";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-    const { nombre, email, password, rol } : IUsuario = req.body;
+    const { nombre, email, password} : IUsuario = req.body;
     
-    const usuario = new Usuario({ nombre, email, password, rol});
+    const usuario = new Usuario({ nombre, email, password});
 
     // Encriptar contraseña
 

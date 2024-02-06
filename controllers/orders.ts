@@ -1,29 +1,36 @@
+import { Request, Response } from "express";
+import Order, { IOrder } from "../models/order";
+import { ObjectId } from "mongoose";
 
-import { Request, Response } from 'express';
-import Order, { IOrder } from '../models/orders';
+export const getOrders =async (req:Request, res: Response): Promise<void> => {
+    const usuarioId: ObjectId = req.body.usuarioConfirmado._id;
 
-export const getOrders = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const orders = await Order.find();
-        res.json({data: orders});
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({msj: 'Error al obtener las órdenes'});
+    const consulta = { user: usuarioId }
 
+    const orders = await Order.find(consulta)
+
+    res.json({
+        data: [...orders]
+    })
+}
+
+export const createOrder = async(req:Request, res: Response): Promise<void> => {
+    const usuario: ObjectId = req.body.usuarioConfirmado._id
+
+    const orderData: IOrder = req.body
+
+    const data = {
+        ...orderData,
+        user: usuario,
+        createdAt: new Date(),
+        status: "pending"
     }
-};
 
-export const createOrder = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const orderData: IOrder = req.body;
-        const newOrder = await Order.create(orderData);
-        res.json({data: newOrder});
+    const order = new Order(data)
 
-        const updateOrders = await Order.find();
-        res.json({data: updateOrders});
+    await order.save();
 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({msj: 'Error al crear la orden'});
-    }
+    res.status(201).json({
+        order
+    })
 }
