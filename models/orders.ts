@@ -12,7 +12,7 @@ export interface IItem {
     price: number;
     quantity: number;
     title: string;
-    product: Types.ObjectId;
+    category: string;
 }
 
 export interface IOrder {
@@ -20,7 +20,7 @@ export interface IOrder {
     user: Types.ObjectId;
     price: number;
     shippingCost: number;
-    items: IItem[];
+    item: IItem[];
     shippingDetails: IShippingDetails;
     status: string;
     total: number
@@ -44,7 +44,7 @@ const OrderSchema = new Schema<IOrder>({
         type: Number,
         required: true,
     },
-    items: {
+    item: {
         type: [{
             id: {
                 type: Number,
@@ -61,7 +61,11 @@ const OrderSchema = new Schema<IOrder>({
             title: {
                 type: String,
                 required: true
-            }
+            },
+            category: {
+                type: String,
+                required: true
+            },
         }],
         required: true
     },

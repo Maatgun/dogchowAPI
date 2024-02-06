@@ -1,37 +1,29 @@
 
 import { Request, Response } from 'express';
-import Order, { IOrder } from '../models/order';
-import { ObjectId } from 'mongoose';
+import Order, { IOrder } from '../models/orders';
 
 export const getOrders = async (req: Request, res: Response): Promise<void> => {
-    const usuarioId: ObjectId = req.body.usuarioConfirmado._id;
+    try {
+        const orders = await Order.find();
+        res.json({data: orders});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({msj: 'Error al obtener las órdenes'});
 
-    const consulta = { user: usuarioId };
-
-    const orders = await Order.find(consulta);  
-
-    res.json({
-        data: [...orders]
-    });
+    }
 };
 
 export const createOrder = async (req: Request, res: Response): Promise<void> => {
-    const usuario: ObjectId = req.body.usuarioConfirmado._id;
+    try {
+        const orderData: IOrder = req.body;
+        const newOrder = await Order.create(orderData);
+        res.json({data: newOrder});
 
-    const orderData: IOrder = req.body;
+        const updateOrders = await Order.find();
+        res.json({data: updateOrders});
 
-    const data = {
-        ...orderData,
-        user: usuario,
-        createdAt: new Date(),
-        status: 'pending'
-    };
-
-    const order = new Order(data);
-
-    await order.save();
-
-    res.status(201).json({
-        order
-    });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({msj: 'Error al crear la orden'});
+    }
 }

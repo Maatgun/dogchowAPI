@@ -13,24 +13,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createOrder = exports.getOrders = void 0;
-const order_1 = __importDefault(require("../models/order"));
+const orders_1 = __importDefault(require("../models/orders"));
 const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const usuarioId = req.body.usuarioConfirmado._id;
-    const consulta = { user: usuarioId };
-    const orders = yield order_1.default.find(consulta);
-    res.json({
-        data: [...orders]
-    });
+    try {
+        const orders = yield orders_1.default.find();
+        res.json({ data: orders });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ msj: 'Error al obtener las órdenes' });
+    }
 });
 exports.getOrders = getOrders;
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const usuario = req.body.usuarioConfirmado._id;
-    const orderData = req.body;
-    const data = Object.assign(Object.assign({}, orderData), { user: usuario, createdAt: new Date(), status: 'pending' });
-    const order = new order_1.default(data);
-    yield order.save();
-    res.status(201).json({
-        order
-    });
+    try {
+        const orderData = req.body;
+        const newOrder = yield orders_1.default.create(orderData);
+        res.json({ data: newOrder });
+        const updateOrders = yield orders_1.default.find();
+        res.json({ data: updateOrders });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ msj: 'Error al crear la orden' });
+    }
 });
 exports.createOrder = createOrder;
